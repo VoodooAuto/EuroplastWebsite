@@ -37,8 +37,16 @@ export default function Resources() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
+  // Build query parameters
+  const queryParams = new URLSearchParams();
+  if (typeFilter && typeFilter !== "all") {
+    queryParams.set("type", typeFilter);
+  }
+  const queryString = queryParams.toString();
+  const apiUrl = `/api/resources${queryString ? `?${queryString}` : ''}`;
+
   const { data: resources, isLoading, error } = useQuery<Resource[]>({
-    queryKey: ["/api/resources", typeFilter === "all" ? "" : typeFilter],
+    queryKey: [apiUrl],
   });
 
   const filteredResources = resources?.filter(resource => {

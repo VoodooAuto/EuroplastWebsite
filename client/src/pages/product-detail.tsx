@@ -14,7 +14,7 @@ export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   
   const { data: product, isLoading, error } = useQuery<Product>({
-    queryKey: ["/api/products", id],
+    queryKey: [`/api/products/${id}`],
   });
 
   if (error) {

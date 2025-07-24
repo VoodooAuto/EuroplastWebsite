@@ -20,7 +20,7 @@ export default function IndustryDetail() {
   const { slug } = useParams<{ slug: string }>();
   
   const { data: industry, isLoading: industryLoading, error: industryError } = useQuery<Industry>({
-    queryKey: ["/api/industries", slug],
+    queryKey: [`/api/industries/${slug}`],
   });
 
   const { data: products, isLoading: productsLoading } = useQuery<Product[]>({
