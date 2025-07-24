@@ -12,11 +12,11 @@ import type { Product } from "@shared/schema";
 
 export default function Products() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
-  const [materialFilter, setMaterialFilter] = useState<string>("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [materialFilter, setMaterialFilter] = useState<string>("all");
 
   const { data: products, isLoading, error } = useQuery<Product[]>({
-    queryKey: ["/api/products", categoryFilter, materialFilter],
+    queryKey: ["/api/products", categoryFilter === "all" ? "" : categoryFilter, materialFilter === "all" ? "" : materialFilter],
   });
 
   const filteredProducts = products?.filter(product =>
@@ -25,7 +25,7 @@ export default function Products() {
   ) || [];
 
   const categoryOptions = [
-    { value: "", label: "All Categories" },
+    { value: "all", label: "All Categories" },
     { value: "thermoformed-trays", label: "Thermoformed Trays" },
     { value: "plastic-sheets", label: "Plastic Sheets" },
     { value: "blister-packaging", label: "Blister Packaging" },
@@ -33,7 +33,7 @@ export default function Products() {
   ];
 
   const materialOptions = [
-    { value: "", label: "All Materials" },
+    { value: "all", label: "All Materials" },
     { value: "PET", label: "PET" },
     { value: "PP", label: "PP" },
     { value: "PS", label: "PS" },
@@ -42,8 +42,8 @@ export default function Products() {
 
   const clearFilters = () => {
     setSearchTerm("");
-    setCategoryFilter("");
-    setMaterialFilter("");
+    setCategoryFilter("all");
+    setMaterialFilter("all");
   };
 
   if (error) {
@@ -127,12 +127,12 @@ export default function Products() {
 
               {/* Active Filters */}
               <div className="flex gap-2 flex-wrap">
-                {categoryFilter && (
+                {categoryFilter && categoryFilter !== "all" && (
                   <Badge variant="secondary" className="flex items-center gap-1">
                     Category: {categoryOptions.find(o => o.value === categoryFilter)?.label}
                   </Badge>
                 )}
-                {materialFilter && (
+                {materialFilter && materialFilter !== "all" && (
                   <Badge variant="secondary" className="flex items-center gap-1">
                     Material: {materialFilter}
                   </Badge>

@@ -18,14 +18,14 @@ const resourceIcons = {
 };
 
 const resourceCategories = {
-  "": "All Categories",
+  "all": "All Categories",
   "general": "General",
   "product-specific": "Product Specific",
   "compliance": "Compliance & Certifications",
 };
 
 const resourceTypes = {
-  "": "All Types",
+  "all": "All Types",
   "brochure": "Brochures",
   "certificate": "Certificates", 
   "datasheet": "Data Sheets",
@@ -34,24 +34,24 @@ const resourceTypes = {
 
 export default function Resources() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
   const { data: resources, isLoading, error } = useQuery<Resource[]>({
-    queryKey: ["/api/resources", typeFilter],
+    queryKey: ["/api/resources", typeFilter === "all" ? "" : typeFilter],
   });
 
   const filteredResources = resources?.filter(resource => {
     const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          resource.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !categoryFilter || resource.category === categoryFilter;
+    const matchesCategory = categoryFilter === "all" || resource.category === categoryFilter;
     return matchesSearch && matchesCategory;
   }) || [];
 
   const clearFilters = () => {
     setSearchTerm("");
-    setTypeFilter("");
-    setCategoryFilter("");
+    setTypeFilter("all");
+    setCategoryFilter("all");
   };
 
   if (error) {
@@ -135,14 +135,14 @@ export default function Resources() {
             </div>
 
             {/* Active Filters */}
-            {(typeFilter || categoryFilter || searchTerm) && (
+            {(typeFilter !== "all" || categoryFilter !== "all" || searchTerm) && (
               <div className="flex gap-2 flex-wrap">
-                {typeFilter && (
+                {typeFilter && typeFilter !== "all" && (
                   <Badge variant="secondary">
                     Type: {resourceTypes[typeFilter as keyof typeof resourceTypes]}
                   </Badge>
                 )}
-                {categoryFilter && (
+                {categoryFilter && categoryFilter !== "all" && (
                   <Badge variant="secondary">
                     Category: {resourceCategories[categoryFilter as keyof typeof resourceCategories]}
                   </Badge>

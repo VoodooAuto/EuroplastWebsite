@@ -375,6 +375,8 @@ export class MemStorage implements IStorage {
     const product: Product = {
       ...insertProduct,
       id,
+      description: insertProduct.description || null,
+      isActive: insertProduct.isActive || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -396,6 +398,8 @@ export class MemStorage implements IStorage {
     const industry: Industry = {
       ...insertIndustry,
       id,
+      description: insertIndustry.description || null,
+      isActive: insertIndustry.isActive || null,
       createdAt: new Date(),
     };
     this.industries.set(id, industry);
@@ -422,6 +426,7 @@ export class MemStorage implements IStorage {
     const blogPost: BlogPost = {
       ...insertBlogPost,
       id,
+      category: insertBlogPost.category || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -435,6 +440,7 @@ export class MemStorage implements IStorage {
     const quoteRequest: QuoteRequest = {
       ...insertQuoteRequest,
       id,
+      industry: insertQuoteRequest.industry || null,
       status: "new",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -453,6 +459,10 @@ export class MemStorage implements IStorage {
     const contactInquiry: ContactInquiry = {
       ...insertContactInquiry,
       id,
+      company: insertContactInquiry.company || null,
+      industry: insertContactInquiry.industry || null,
+      phone: insertContactInquiry.phone || null,
+      subject: insertContactInquiry.subject || null,
       status: "new",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -481,6 +491,7 @@ export class MemStorage implements IStorage {
     const resource: Resource = {
       ...insertResource,
       id,
+      description: insertResource.description || null,
       downloadCount: 0,
       createdAt: new Date(),
     };
@@ -504,6 +515,7 @@ export class MemStorage implements IStorage {
     const testimonial: Testimonial = {
       ...insertTestimonial,
       id,
+      isActive: insertTestimonial.isActive || null,
       createdAt: new Date(),
     };
     this.testimonials.set(id, testimonial);
