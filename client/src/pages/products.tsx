@@ -15,8 +15,19 @@ export default function Products() {
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [materialFilter, setMaterialFilter] = useState<string>("all");
 
+  // Build query parameters
+  const queryParams = new URLSearchParams();
+  if (categoryFilter && categoryFilter !== "all") {
+    queryParams.set("category", categoryFilter);
+  }
+  if (materialFilter && materialFilter !== "all") {
+    queryParams.set("material", materialFilter);
+  }
+  const queryString = queryParams.toString();
+  const apiUrl = `/api/products${queryString ? `?${queryString}` : ''}`;
+
   const { data: products, isLoading, error } = useQuery<Product[]>({
-    queryKey: ["/api/products", categoryFilter === "all" ? "" : categoryFilter, materialFilter === "all" ? "" : materialFilter],
+    queryKey: [apiUrl],
   });
 
   const filteredProducts = products?.filter(product =>
