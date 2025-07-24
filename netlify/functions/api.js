@@ -139,12 +139,24 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const path = event.path.replace("/.netlify/functions/api", "");
+  // Extract the API path from the request
+  // Handle both direct calls and Netlify function calls
+  let path = event.path;
+  if (path.includes('/.netlify/functions/api')) {
+    path = path.replace('/.netlify/functions/api', '');
+  }
+  // Remove leading slash if present
+  if (path.startsWith('/')) {
+    path = path.substring(1);
+  }
+  
   const method = event.httpMethod;
+  
+  console.log('API Function called:', { originalPath: event.path, processedPath: path, method });
 
   try {
     // Products routes
-    if (path === "/products" && method === "GET") {
+    if (path === "products" && method === "GET") {
       const { category, material } = event.queryStringParameters || {};
       let products = [...demoProducts];
       
@@ -163,8 +175,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    if (path.startsWith("/products/") && method === "GET") {
-      const id = parseInt(path.split("/")[2]);
+    if (path.startsWith("products/") && method === "GET") {
+      const id = parseInt(path.split("/")[1]);
       const product = demoProducts.find(p => p.id === id);
       
       if (!product) {
@@ -183,7 +195,7 @@ exports.handler = async (event, context) => {
     }
 
     // Industries routes
-    if (path === "/industries" && method === "GET") {
+    if (path === "industries" && method === "GET") {
       return {
         statusCode: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -191,8 +203,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    if (path.startsWith("/industries/") && method === "GET") {
-      const slug = path.split("/")[2];
+    if (path.startsWith("industries/") && method === "GET") {
+      const slug = path.split("/")[1];
       const industry = demoIndustries.find(i => i.slug === slug);
       
       if (!industry) {
@@ -211,7 +223,7 @@ exports.handler = async (event, context) => {
     }
 
     // Blog routes
-    if (path === "/blog" && method === "GET") {
+    if (path === "blog" && method === "GET") {
       const blogPosts = demoBlogPosts.filter(p => p.isPublished);
       return {
         statusCode: 200,
@@ -220,8 +232,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    if (path.startsWith("/blog/") && method === "GET") {
-      const slug = path.split("/")[2];
+    if (path.startsWith("blog/") && method === "GET") {
+      const slug = path.split("/")[1];
       const blogPost = demoBlogPosts.find(p => p.slug === slug);
       
       if (!blogPost) {
@@ -240,7 +252,7 @@ exports.handler = async (event, context) => {
     }
 
     // Resources routes
-    if (path === "/resources" && method === "GET") {
+    if (path === "resources" && method === "GET") {
       const { type } = event.queryStringParameters || {};
       let resources = [...demoResources];
       
@@ -256,7 +268,7 @@ exports.handler = async (event, context) => {
     }
 
     // Testimonials routes
-    if (path === "/testimonials" && method === "GET") {
+    if (path === "testimonials" && method === "GET") {
       const testimonials = demoTestimonials.filter(t => t.isActive);
       return {
         statusCode: 200,
@@ -266,7 +278,7 @@ exports.handler = async (event, context) => {
     }
 
     // Quote request route
-    if (path === "/quote-request" && method === "POST") {
+    if (path === "quote-request" && method === "POST") {
       const body = JSON.parse(event.body || "{}");
       
       // Basic validation
@@ -296,7 +308,7 @@ exports.handler = async (event, context) => {
     }
 
     // Contact inquiry route
-    if (path === "/contact" && method === "POST") {
+    if (path === "contact" && method === "POST") {
       const body = JSON.parse(event.body || "{}");
       
       // Basic validation
